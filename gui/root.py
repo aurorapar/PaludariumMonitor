@@ -24,7 +24,7 @@ class Root(tk.Tk):
 
     def __init__(self, db_connection):
         super().__init__()
-        self.title("Aquarium Monitor")
+        self.title("Paludarium Monitor")
         self.resizable(width=False, height=False)
         self.geometry(window_size)
 
@@ -87,8 +87,6 @@ class Root(tk.Tk):
         sorted_data = []
         for data_set_number in range(len(data_returned[0])):
             sorted_data.append([n[data_set_number] for n in data_returned])
-
-        sorted_data[0] = list(map(lambda n: (n - min(sorted_data[0])) / 60 / 60 / 24, sorted_data[0]))
 
         if not self.graph:
             self.graph = Graph("Paludarium Values", "Time (days)", ([],), monitored_values, ([], [], []),

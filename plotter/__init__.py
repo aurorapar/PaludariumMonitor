@@ -12,8 +12,9 @@ class Graph:
         if len(y_labels) != len(y_inputs):
             raise ValueError("There are not enough labels for the y values")
 
-        plt.ion()
+        self.title = title
 
+        plt.ion()
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
         lines = list()
@@ -54,9 +55,11 @@ class Graph:
 
         handles = list(zip(*lines))[0]
         self.ax.legend(loc='best', handles=handles)
-        plt.title(title)
+        plt.title(self.title)
 
     def update(self, x_input, y_input):
+        plt.title(self.title + f" ({time.ctime(min(x_input))} - {time.ctime(max(x_input))})")
+        x_input = list(map(lambda n: (n - min(x_input)) / 60 / 60 / 24, x_input))
         for i, data_set in enumerate(y_input):
             axs = self.lines[i]
             axs.set_xdata(x_input)

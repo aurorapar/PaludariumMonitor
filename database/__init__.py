@@ -18,8 +18,6 @@ for column in desired_values:
     fetch_query += " "
 fetch_graph_value_query = (f"""{fetch_query} FROM {table_name}""")
 
-print(fetch_graph_value_query)
-
 insert_monitored_data = (
                         "INSERT INTO "
                         "monitored_info (uuid, time_stamp, humidity, temperature, water) "
