@@ -1,18 +1,29 @@
-version = '1.0.0'
+import argparse
+from threading import Thread
 
-from database import connect
-from gui.root import Root
+import database
 from gui.database_password_prompt import PasswordPrompt
-import global_values
+from global_values import global_values
+from monitor import Monitor
+
+version = '1.0.0'
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    password_prompt = PasswordPrompt()
-    password_prompt.mainloop()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-u', '--user', type=str, default=0)
+    parser.add_argument('-p', '--password', type=str, default=0)
+    parser.add_argument('-i', '--ip', type=str, default=0)
+    parser.add_argument('-d', '--database', type=str, default=0)
+    args = parser.parse_args()
+    if args.user:
+        database.connect(user=args.user, password=args.password, host=args.ip, database=args.database)
+    else:
+        password_prompt = PasswordPrompt()
+        password_prompt.mainloop()
 
-    db_params = global_values.global_values
-    db_connection = connect(**db_params)
+    db_params = global_values
 
-    gui_root = Root(db_connection)
-    gui_root.mainloop()
-
+    monitor = Monitor(2)
+    while True:
+        pass

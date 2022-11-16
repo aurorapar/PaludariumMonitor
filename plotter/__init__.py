@@ -1,8 +1,8 @@
 import time
 
-import matplotlib.pyplot as plt
+from global_values import TIME_FORMAT
 
-# TODO: thread this so that other code is not blocked
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -35,7 +35,7 @@ class Graph:
             self.axes.append(axs)
             axs.set_xlabel(x_label)
             axs.set_ylabel(y_labels[i])
-            axs.set_facecolor((0.06,0.06,0.06))
+            axs.set_facecolor((0.06, 0.06, 0.06))
             axs.spines['bottom'].set_color('white')
             axs.spines['top'].set_color('white')
             axs.spines['left'].set_color('white')
@@ -58,14 +58,20 @@ class Graph:
         plt.title(self.title)
 
     def update(self, x_input, y_input):
-        plt.title(self.title + f" ({time.ctime(min(x_input))} - {time.ctime(max(x_input))})")
-        x_input = list(map(lambda n: (n - min(x_input)) / 60 / 60 / 24, x_input))
-        for i, data_set in enumerate(y_input):
+        x_input = [x[0] for x in x_input]
+        start_time = time.strftime(TIME_FORMAT, time.localtime(min(x_input)))
+        end_time = time.strftime(TIME_FORMAT, time.localtime(max(x_input)))
+        x_input = [x-x_input[0] for x in x_input]
+        title = f"Paludarium Monitor\n({start_time} - {end_time})"
+        plt.title(title)
+        x_input = list(map(lambda n: (n - min(x_input)) / 60 / 60, x_input))
+        for i, field in enumerate(y_input):
+            data_set = [float(y[0]) for y in field]
             axs = self.lines[i]
             axs.set_xdata(x_input)
-            axs.set_ydata(y_input[i])
+            axs.set_ydata(data_set)
             self.ax.set_xlim(min(x_input), max(x_input))
-            self.axes[i].set_ylim(min(y_input[i]) - np.mean(y_input[i]) / 2, max(y_input[i]) + np.mean(y_input[i]) / 2)
+            self.axes[i].set_ylim(min(data_set) - np.mean(data_set) / 2, max(data_set) + np.mean(data_set) / 2)
         plt.subplots_adjust(right=.75)
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()

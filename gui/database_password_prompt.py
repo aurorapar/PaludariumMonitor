@@ -1,11 +1,10 @@
 import tkinter as tk
 from tkinter import Frame, Label, Entry, StringVar
 
+import database
 import global_values
 
 fields = ['user', 'password', 'host', 'database']
-creds = {'user': 'aquarium_monitor', 'password': 'axolotl0421', 'host':'192.168.1.142',
-         'database': 'paludarium_monitor'}
 
 
 class PasswordPrompt(tk.Tk):
@@ -38,8 +37,10 @@ class PasswordPrompt(tk.Tk):
         for i, field in enumerate(fields):
             if len(self.entries[i].get()):
                 global_values.global_values[field] = self.entries[i].get()
-
-        if not global_values.global_values.values():
-            global_values.global_values = {key: value for key, value in creds.items()}
+        try:
+            database.connect(**global_values.global_values)
+        except Exception as e:
+            self.destroy()
+            raise e
 
         self.destroy()
